@@ -1,1 +1,5 @@
 theme: jekyll-theme-minimal
+title: Cookie Interactive
+description: The Ultimate Interaction
+logo: ./logo/trans01.png
+show_downloads: false
