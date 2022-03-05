@@ -1,8 +1,6 @@
-# theme: jekyll-theme-minimal
+theme: jekyll-theme-minimal
 # remote_theme: "mmistakes/minimal-mistakes@4.24.0"
 title: Cookie Interactive Inc
 description: The Ultimate Interaction
 logo: ./logo/trans01.png
 show_downloads: false
-
-theme: jekyll-theme-minimal
