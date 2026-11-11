@@ -1,511 +1,212 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cookie Interactive — Q-Flow, Automated FEA for Heat Exchangers</title>
-<meta name="description" content="Cookie Interactive는 API 661 공랭식 열교환기(ACHE) 자동 구조해석 서비스 Q-Flow를 개발하는 소프트웨어 회사입니다.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-<style>
-  :root{
-    --bg:#F5F8FB;
-    --bg-alt:#ECF1F7;
-    --ink:#1E2430;
-    --ink-soft:#57616F;
-    --blue:#159FDB;
-    --blue-deep:#0D7DB0;
-    --peri:#6F86F2;
-    --line:#D7E0EA;
-    --white:#FFFFFF;
-    --maxw:1180px;
-  }
-  *{box-sizing:border-box;}
-  html{scroll-behavior:smooth;}
-  body{
-    margin:0;
-    background:var(--bg);
-    color:var(--ink);
-    font-family:'IBM Plex Sans','IBM Plex Sans KR',sans-serif;
-    line-height:1.55;
-    -webkit-font-smoothing:antialiased;
-  }
-  .mono{font-family:'IBM Plex Mono',monospace;}
-  a{color:inherit;}
-  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 28px;}
-  img{max-width:100%;display:block;}
-
-  /* ---------- Header ---------- */
-  header{
-    position:sticky;top:0;z-index:50;
-    background:rgba(245,248,251,0.92);
-    backdrop-filter:blur(6px);
-    border-bottom:1px solid var(--line);
-  }
-  .nav{
-    display:flex;align-items:center;justify-content:space-between;
-    padding:16px 0;
-  }
-  .brand{display:flex;align-items:center;gap:10px;text-decoration:none;}
-  .brand img{height:28px;width:auto;}
-  .brand span{font-weight:600;font-size:1.02rem;letter-spacing:-0.01em;}
-  nav.links{display:flex;gap:32px;}
-  nav.links a{
-    text-decoration:none;color:var(--ink-soft);font-size:0.94rem;font-weight:500;
-    transition:color .15s ease;
-  }
-  nav.links a:hover{color:var(--blue-deep);}
-  .nav-cta{
-    display:inline-block;background:var(--ink);color:var(--white)!important;
-    padding:9px 18px;border-radius:3px;font-size:0.9rem;font-weight:500;
-    text-decoration:none;transition:background .15s ease;
-  }
-  .nav-cta:hover{background:var(--blue-deep);}
-  .menu-btn{display:none;background:none;border:none;cursor:pointer;padding:8px;}
-  .menu-btn span{display:block;width:22px;height:2px;background:var(--ink);margin:5px 0;}
-
-  /* ---------- Hero ---------- */
-  .hero{
-    padding:76px 0 64px;
-    border-bottom:1px solid var(--line);
-  }
-  .hero-grid{
-    display:grid;grid-template-columns:1.05fr 0.95fr;gap:56px;align-items:center;
-  }
-  .eyebrow-line{
-    display:flex;align-items:center;gap:10px;margin-bottom:22px;
-  }
-  .eyebrow-line .dot{width:6px;height:6px;background:var(--blue);border-radius:50%;}
-  .eyebrow-line span{
-    font-family:'IBM Plex Mono',monospace;font-size:0.78rem;color:var(--blue-deep);
-    letter-spacing:0.02em;
-  }
-  h1{
-    font-size:2.7rem;line-height:1.16;font-weight:600;letter-spacing:-0.015em;
-    margin:0 0 20px;
-  }
-  h1 em{font-style:normal;color:var(--blue-deep);}
-  .hero p.lede{
-    font-size:1.09rem;color:var(--ink-soft);max-width:46ch;margin:0 0 32px;
-  }
-  .hero-actions{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:36px;}
-  .btn-primary{
-    background:var(--blue);color:var(--white);text-decoration:none;
-    padding:13px 24px;border-radius:3px;font-weight:500;font-size:0.96rem;
-    transition:background .15s ease;
-  }
-  .btn-primary:hover{background:var(--blue-deep);}
-  .btn-ghost{
-    border:1px solid var(--line);text-decoration:none;color:var(--ink);
-    padding:13px 24px;border-radius:3px;font-weight:500;font-size:0.96rem;
-    transition:border-color .15s ease, color .15s ease;
-  }
-  .btn-ghost:hover{border-color:var(--blue);color:var(--blue-deep);}
-  .hero-meta{
-    display:flex;gap:28px;flex-wrap:wrap;padding-top:24px;border-top:1px solid var(--line);
-  }
-  .hero-meta div{display:flex;flex-direction:column;gap:4px;}
-  .hero-meta .num{font-family:'IBM Plex Mono',monospace;font-size:1.3rem;font-weight:500;color:var(--ink);}
-  .hero-meta .lbl{font-size:0.82rem;color:var(--ink-soft);}
-
-  /* ---------- Hero diagram ---------- */
-  .diagram-card{
-    background:var(--white);border:1px solid var(--line);border-radius:4px;
-    padding:22px 22px 18px;
-  }
-  .diagram-card .cap{
-    display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px;
-  }
-  .diagram-card .cap-title{font-size:0.82rem;color:var(--ink-soft);}
-  .diagram-card .cap-tag{
-    font-family:'IBM Plex Mono',monospace;font-size:0.72rem;color:var(--blue-deep);
-    background:var(--bg-alt);padding:2px 8px;border-radius:2px;
-  }
-  svg.hero-svg{width:100%;height:auto;display:block;}
-
-  /* ---------- Section shell ---------- */
-  section{padding:80px 0;border-bottom:1px solid var(--line);}
-  section.tight{padding:56px 0;}
-  .section-head{max-width:60ch;margin-bottom:44px;}
-  .section-head .kicker{
-    font-family:'IBM Plex Mono',monospace;font-size:0.78rem;color:var(--blue-deep);
-    margin-bottom:12px;display:block;
-  }
-  .section-head h2{font-size:1.9rem;font-weight:600;letter-spacing:-0.01em;margin:0 0 14px;}
-  .section-head p{color:var(--ink-soft);font-size:1.02rem;margin:0;}
-
-  /* ---------- Load cases strip ---------- */
-  .loadcases{
-    display:grid;grid-template-columns:repeat(4,1fr);gap:1px;
-    background:var(--line);border:1px solid var(--line);border-radius:4px;overflow:hidden;
-  }
-  .loadcase{background:var(--white);padding:20px 18px;}
-  .loadcase .lc-num{
-    font-family:'IBM Plex Mono',monospace;font-size:0.78rem;color:var(--blue-deep);
-    display:block;margin-bottom:8px;
-  }
-  .loadcase .lc-label{font-size:0.94rem;font-weight:500;}
-
-  /* ---------- Pipeline ---------- */
-  .pipeline{display:grid;grid-template-columns:repeat(3,1fr);gap:0;position:relative;}
-  .pipe-step{
-    background:var(--white);border:1px solid var(--line);padding:26px 24px;position:relative;
-  }
-  .pipe-step:not(:last-child){border-right:none;}
-  .pipe-step .pipe-num{
-    font-family:'IBM Plex Mono',monospace;color:var(--ink-soft);font-size:0.8rem;
-    margin-bottom:10px;display:block;
-  }
-  .pipe-step h3{font-size:1.08rem;margin:0 0 8px;font-weight:600;}
-  .pipe-step p{margin:0;color:var(--ink-soft);font-size:0.92rem;}
-
-  /* ---------- Two column with facts ---------- */
-  .split{display:grid;grid-template-columns:1.1fr 0.9fr;gap:56px;align-items:start;}
-  .facts{
-    background:var(--bg-alt);border:1px solid var(--line);border-radius:4px;padding:26px;
-  }
-  .facts dl{margin:0;}
-  .facts .row{
-    display:flex;justify-content:space-between;gap:16px;padding:13px 0;
-    border-bottom:1px solid var(--line);font-size:0.92rem;
-  }
-  .facts .row:last-child{border-bottom:none;}
-  .facts dt{color:var(--ink-soft);}
-  .facts dd{margin:0;font-weight:500;text-align:right;}
-
-  /* ---------- Services ---------- */
-  .services{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:4px;overflow:hidden;}
-  .svc{background:var(--white);padding:30px 26px;}
-  .svc .svc-icon{width:34px;height:34px;margin-bottom:18px;}
-  .svc h3{font-size:1.08rem;margin:0 0 10px;font-weight:600;}
-  .svc p{margin:0;color:var(--ink-soft);font-size:0.92rem;}
-
-  /* ---------- Customers ---------- */
-  .customers{display:flex;flex-wrap:wrap;gap:12px;}
-  .customers span{
-    border:1px solid var(--line);border-radius:3px;padding:9px 16px;
-    font-size:0.9rem;color:var(--ink-soft);background:var(--white);
-  }
-
-  /* ---------- Contact ---------- */
-  .contact-grid{display:grid;grid-template-columns:0.9fr 1.1fr;gap:56px;}
-  .contact-info .row{padding:16px 0;border-bottom:1px solid var(--line);}
-  .contact-info .row:first-child{padding-top:0;}
-  .contact-info .k{font-size:0.8rem;color:var(--ink-soft);margin-bottom:4px;}
-  .contact-info .v{font-size:1rem;font-weight:500;}
-  form{display:flex;flex-direction:column;gap:14px;}
-  .field{display:flex;flex-direction:column;gap:6px;}
-  .field label{font-size:0.84rem;color:var(--ink-soft);}
-  .field input, .field textarea{
-    border:1px solid var(--line);border-radius:3px;padding:12px 14px;
-    font-family:inherit;font-size:0.95rem;background:var(--white);color:var(--ink);
-  }
-  .field input:focus, .field textarea:focus{outline:2px solid var(--blue);outline-offset:1px;}
-  .field textarea{resize:vertical;min-height:110px;}
-  .submit-btn{
-    align-self:flex-start;background:var(--ink);color:var(--white);border:none;
-    padding:13px 26px;border-radius:3px;font-size:0.96rem;font-weight:500;cursor:pointer;
-    transition:background .15s ease;
-  }
-  .submit-btn:hover{background:var(--blue-deep);}
-
-  /* ---------- Footer ---------- */
-  footer{padding:40px 0;}
-  .foot-grid{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:18px;}
-  .foot-brand{display:flex;align-items:center;gap:10px;}
-  .foot-brand img{height:22px;}
-  .foot-brand span{font-weight:600;font-size:0.95rem;}
-  .foot-tag{font-size:0.82rem;color:var(--ink-soft);}
-  .foot-copy{font-size:0.8rem;color:var(--ink-soft);}
-
-  @media (max-width:880px){
-    nav.links{display:none;}
-    .menu-btn{display:block;}
-    .hero-grid, .split, .contact-grid{grid-template-columns:1fr;}
-    .hero{padding:52px 0 44px;}
-    h1{font-size:2.05rem;}
-    .loadcases{grid-template-columns:repeat(2,1fr);}
-    .pipeline{grid-template-columns:1fr;}
-    .pipe-step:not(:last-child){border-right:1px solid var(--line);border-bottom:none;}
-    .services{grid-template-columns:1fr;}
-    section{padding:56px 0;}
-  }
-
-  @media (prefers-reduced-motion: reduce){
-    html{scroll-behavior:auto;}
-    *{animation:none!important;transition:none!important;}
-  }
-
-  /* one orchestrated hero reveal */
-  .reveal{opacity:0;transform:translateY(10px);animation:revealIn .6s ease forwards;}
-  .reveal.d1{animation-delay:.05s;}
-  .reveal.d2{animation-delay:.15s;}
-  .reveal.d3{animation-delay:.25s;}
-  @keyframes revealIn{to{opacity:1;transform:translateY(0);}}
-</style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>쿠키인터랙티브 주식회사 | 엔지니어링 해석과 업무 자동화 소프트웨어</title>
+<meta name="description" content="쿠키인터랙티브는 구조해석(FEA) 자동화와 업무 자동화, 맞춤형 소프트웨어 개발을 하는 경남 창원의 소프트웨어 회사입니다.">
+<meta name="robots" content="noindex, nofollow">
+<link rel="canonical" href="https://cookieinteractive.com/">
+<link rel="alternate" hreflang="ko" href="https://cookieinteractive.com/">
+<link rel="alternate" hreflang="en" href="https://cookieinteractive.com/en/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="쿠키인터랙티브 주식회사 | 엔지니어링 해석과 업무 자동화 소프트웨어">
+<meta property="og:description" content="쿠키인터랙티브는 구조해석(FEA) 자동화와 업무 자동화, 맞춤형 소프트웨어 개발을 하는 경남 창원의 소프트웨어 회사입니다.">
+<meta property="og:url" content="https://cookieinteractive.com/">
+<link rel="icon" type="image/png" href="assets/favicon.png">
+<link rel="stylesheet" href="assets/fonts/pretendardvariable-dynamic-subset.css">
+<link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
+<a class="skip" href="#main">본문으로 건너뛰기</a>
 
-<header>
-  <div class="wrap nav">
-    <a href="#top" class="brand">
-      <img src="assets/logo.png" alt="Cookie Interactive">
+<header class="site-head">
+  <div class="wrap">
+    <a class="brand" href="./">
+      <img src="assets/mark.png" alt="" width="38" height="38">
+      <span>쿠키인터랙티브<small lang="en">Cookie Interactive Inc.</small></span>
     </a>
-    <nav class="links">
-      <a href="#qflow">Q-Flow</a>
-      <a href="#services">외주개발</a>
-      <a href="#about">회사소개</a>
-      <a href="#contact">문의</a>
+    <nav class="site-nav" aria-label="주 메뉴">
+      <ul>
+        <li><a href="#solutions">솔루션</a></li>
+        <li><a href="q-flow/">Q-Flow</a></li>
+        <li><a href="company/">회사 소개</a></li>
+        <li><a href="notice/">공고</a></li>
+        <li class="lang"><a href="en/" lang="en" hreflang="en">English</a></li>
+        <li><a class="btn btn-primary" href="mailto:contact@cookieinteractive.com">문의하기</a></li>
+      </ul>
     </nav>
-    <a href="#contact" class="nav-cta">문의하기</a>
-    <button class="menu-btn" aria-label="메뉴 열기"><span></span><span></span><span></span></button>
   </div>
 </header>
 
-<section class="hero" id="top">
-  <div class="wrap hero-grid">
-    <div>
-      <div class="eyebrow-line reveal d1"><span class="dot"></span><span>Q-FLOW · AUTOMATED FEA</span></div>
-      <h1 class="reveal d1">API 661 열교환기 구조해석,<br><em>도면에서 보고서까지</em> 자동화합니다</h1>
-      <p class="lede reveal d2">Q-Flow는 공랭식 열교환기(ACHE) 헤더박스의 3D 모델링부터 유한요소해석, 보고서 작성까지 이어지는 전 과정을 자동화한 엔지니어링 소프트웨어입니다. Cookie Interactive가 직접 설계하고 운영합니다.</p>
-      <div class="hero-actions reveal d2">
-        <a href="#contact" class="btn-primary">데모 요청하기</a>
-        <a href="#qflow" class="btn-ghost">Q-Flow 자세히 보기</a>
+<main id="main">
+
+  <section class="hero">
+    <div class="wrap">
+      <div>
+        <h1>반복되는 엔지니어링 해석과 업무를 소프트웨어로 자동화합니다</h1>
+        <p class="lead">쿠키인터랙티브는 구조해석(FEA) 자동화와 업무 자동화, 맞춤형 소프트웨어 개발을 하는 회사입니다. 설계와 해석 업무에 맞춘 소프트웨어로 작업 시간과 비용을 줄입니다.</p>
+        <div class="actions">
+          <a class="btn btn-light" href="mailto:contact@cookieinteractive.com">프로젝트 문의</a>
+          <a class="btn btn-ghost" href="q-flow/">Q-Flow 알아보기</a>
+        </div>
       </div>
-      <div class="hero-meta reveal d3">
-        <div><span class="num mono">8</span><span class="lbl">기본 제공 하중조합 (2³)</span></div>
-        <div><span class="num mono">3</span><span class="lbl">단계 자동 파이프라인</span></div>
-        <div><span class="num mono">EPC</span><span class="lbl">대상 고객군</span></div>
-      </div>
+      <figure class="figure">
+        <img src="assets/headerbox-fea.svg" width="2676" height="2061" alt="노즐 두 개가 달린 헤더박스를 요소망으로 나누고 응력 크기를 색으로 나타낸 그림">
+        <figcaption>
+          <span>헤더박스 구조해석 개념도 (설명용 그림)</span>
+          <span class="legend">응력 낮음 <i aria-hidden="true"></i> 높음</span>
+        </figcaption>
+      </figure>
     </div>
+  </section>
 
-    <div class="diagram-card reveal d2">
-      <div class="cap">
-        <span class="cap-title">Header Box — Stress Distribution</span>
-        <span class="cap-tag mono">MAWP CASE</span>
-      </div>
-      <svg class="hero-svg" viewBox="0 0 520 420" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <linearGradient id="stress" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="#DCEBF6"/>
-            <stop offset="45%" stop-color="#7FC8E8"/>
-            <stop offset="75%" stop-color="#159FDB"/>
-            <stop offset="100%" stop-color="#0D7DB0"/>
-          </linearGradient>
-        </defs>
-        <!-- main shell -->
-        <rect x="90" y="70" width="280" height="180" rx="6" fill="url(#stress)" opacity="0.92"/>
-        <!-- mesh lines -->
-        <g stroke="#0D7DB0" stroke-width="0.6" opacity="0.35">
-          <line x1="90" y1="100" x2="370" y2="100"/>
-          <line x1="90" y1="130" x2="370" y2="130"/>
-          <line x1="90" y1="160" x2="370" y2="160"/>
-          <line x1="90" y1="190" x2="370" y2="190"/>
-          <line x1="90" y1="220" x2="370" y2="220"/>
-          <line x1="125" y1="70" x2="125" y2="250"/>
-          <line x1="160" y1="70" x2="160" y2="250"/>
-          <line x1="195" y1="70" x2="195" y2="250"/>
-          <line x1="230" y1="70" x2="230" y2="250"/>
-          <line x1="265" y1="70" x2="265" y2="250"/>
-          <line x1="300" y1="70" x2="300" y2="250"/>
-          <line x1="335" y1="70" x2="335" y2="250"/>
-        </g>
-        <!-- nozzle -->
-        <circle cx="230" cy="60" r="22" fill="#0D7DB0" opacity="0.9"/>
-        <rect x="222" y="18" width="16" height="46" fill="#0D7DB0" opacity="0.9"/>
-        <!-- concentration ring near nozzle -->
-        <circle cx="230" cy="60" r="30" fill="none" stroke="#F5F8FB" stroke-width="1.2" opacity="0.6"/>
-        <circle cx="230" cy="60" r="38" fill="none" stroke="#F5F8FB" stroke-width="1" opacity="0.4"/>
-
-        <!-- dimension line -->
-        <g stroke="#57616F" stroke-width="1">
-          <line x1="90" y1="270" x2="370" y2="270"/>
-          <line x1="90" y1="264" x2="90" y2="276"/>
-          <line x1="370" y1="264" x2="370" y2="276"/>
-        </g>
-        <text x="230" y="290" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#57616F">2,400 mm</text>
-
-        <g stroke="#57616F" stroke-width="1">
-          <line x1="405" y1="70" x2="405" y2="250"/>
-          <line x1="399" y1="70" x2="411" y2="70"/>
-          <line x1="399" y1="250" x2="411" y2="250"/>
-        </g>
-        <text x="430" y="164" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#57616F" transform="rotate(90 430 164)">860 mm</text>
-
-        <!-- nozzle label -->
-        <text x="260" y="45" font-family="IBM Plex Mono" font-size="10" fill="#0D7DB0">Nozzle</text>
-
-        <!-- legend -->
-        <g transform="translate(90,330)">
-          <text x="0" y="0" font-family="IBM Plex Sans" font-size="11" fill="#57616F">von Mises Stress</text>
-          <rect x="0" y="10" width="280" height="8" rx="2" fill="url(#stress)"/>
-          <text x="0" y="34" font-family="IBM Plex Mono" font-size="10" fill="#57616F">0</text>
-          <text x="270" y="34" font-family="IBM Plex Mono" font-size="10" fill="#57616F" text-anchor="end">S_allow</text>
-        </g>
-      </svg>
-    </div>
-  </div>
-</section>
-
-<section class="tight" id="loadcases-strip">
-  <div class="wrap">
-    <div class="section-head" style="margin-bottom:28px;">
-      <span class="kicker">DEFAULT LOAD COMBINATIONS</span>
-      <h2 style="font-size:1.4rem;">8가지 하중조합을 기본으로 제공합니다</h2>
-      <p>수동 해석에서는 시간과 비용 때문에 생략되는 경우가 많은 전체 하중조합을, Q-Flow는 표준 절차로 모두 계산합니다.</p>
-    </div>
-    <div class="loadcases">
-      <div class="loadcase"><span class="lc-num mono">01</span><span class="lc-label">MAWP + Wind (+X)</span></div>
-      <div class="loadcase"><span class="lc-num mono">02</span><span class="lc-label">MAWP + Wind (−X)</span></div>
-      <div class="loadcase"><span class="lc-num mono">03</span><span class="lc-label">MAWP + Wind (+Y)</span></div>
-      <div class="loadcase"><span class="lc-num mono">04</span><span class="lc-label">MAWP + Wind (−Y)</span></div>
-      <div class="loadcase"><span class="lc-num mono">05</span><span class="lc-label">MAWP + Seismic (+X)</span></div>
-      <div class="loadcase"><span class="lc-num mono">06</span><span class="lc-label">MAWP + Seismic (−X)</span></div>
-      <div class="loadcase"><span class="lc-num mono">07</span><span class="lc-label">MAWP + Seismic (+Y)</span></div>
-      <div class="loadcase"><span class="lc-num mono">08</span><span class="lc-label">MAWP + Seismic (−Y)</span></div>
-    </div>
-  </div>
-</section>
-
-<section id="qflow">
-  <div class="wrap">
-    <div class="section-head">
-      <span class="kicker">HOW IT WORKS</span>
-      <h2>모델링부터 보고서까지, 3단계로 끝납니다</h2>
-      <p>엔지니어가 직접 손으로 메시를 다듬고 하중조합을 하나씩 돌리던 작업을 파이프라인으로 대체했습니다.</p>
-    </div>
-    <div class="pipeline">
-      <div class="pipe-step">
-        <span class="pipe-num mono">STEP 1</span>
-        <h3>3D 모델링</h3>
-        <p>헤더박스와 노즐 형상을 입력받아 해석용 3D 형상을 자동 생성합니다.</p>
-      </div>
-      <div class="pipe-step">
-        <span class="pipe-num mono">STEP 2</span>
-        <h3>유한요소해석</h3>
-        <p>Python으로 생성한 입력 파일을 CalculiX 솔버로 실행하고, 8방향 하중조합과 MAWP 조합을 모두 계산합니다.</p>
-      </div>
-      <div class="pipe-step">
-        <span class="pipe-num mono">STEP 3</span>
-        <h3>보고서 생성</h3>
-        <p>SCL(Stress Classification Line) 결과를 포함한 표준 양식의 해석 보고서를 자동으로 작성합니다.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section>
-  <div class="wrap split">
-    <div>
-      <div class="section-head" style="margin-bottom:24px;">
-        <span class="kicker">WHO IT'S FOR</span>
-        <h2>EPC사를 위한 엔지니어링 소프트웨어</h2>
-        <p>Q-Flow는 개별 제작사가 아니라, 다수의 벤더 도면을 검토하고 발주하는 EPC 엔지니어링팀을 위해 설계되었습니다. 과금 방식도 기술 용역이 아닌 사용량 기반 소프트웨어 이용료에 가깝게 설계했습니다.</p>
-      </div>
-      <div class="customers">
-        <span>현대엔지니어링</span>
-        <span>삼성엔지니어링</span>
-        <span>Technip</span>
-        <span>TR</span>
-      </div>
-    </div>
-    <div class="facts">
+  <section class="facts" aria-label="회사 기본 정보">
+    <div class="wrap">
       <dl>
-        <div class="row"><dt>대상 설비</dt><dd>API 661 공랭식 열교환기 (ACHE)</dd></div>
-        <div class="row"><dt>해석 범위</dt><dd>Header Box + Nozzle</dd></div>
-        <div class="row"><dt>과금 방식</dt><dd>사용량 기반</dd></div>
-        <div class="row"><dt>솔버</dt><dd>CalculiX (Python 자동화)</dd></div>
-        <div class="row"><dt>제공 위치</dt><dd>경남 창원</dd></div>
+        <div><dt>설립</dt><dd>2017년</dd></div>
+        <div><dt>소재지</dt><dd>경남 창원</dd></div>
+        <div><dt>기업 규모</dt><dd>소기업 (중소기업 확인서)</dd></div>
+        <div><dt>사업자등록번호</dt><dd>620-87-00732</dd></div>
       </dl>
     </div>
-  </div>
-</section>
+  </section>
 
-<section id="services">
+  <section class="notice-strip" id="notice" aria-labelledby="notice-title">
+    <div class="wrap">
+      <h2 id="notice-title">공고</h2>
+      <p>게시 중인 공고가 없습니다.</p>
+      <a href="notice/">공고 전체 보기</a>
+    </div>
+  </section>
+
+  <section class="band" id="solutions">
+    <div class="wrap">
+      <div class="band-head">
+        <h2>솔루션</h2>
+        <p>사람이 손으로 되풀이하던 해석과 업무를 소프트웨어가 처리하도록 만듭니다.</p>
+      </div>
+      <div class="grid-2">
+        <article class="cell">
+          <h3>엔지니어링 해석 자동화</h3>
+          <p>3D 모델 생성부터 유한요소해석, 보고서 작성까지 이어지는 작업을 하나의 흐름으로 자동화합니다. 하중조합을 하나씩 돌리고 결과를 손으로 옮기던 일을 줄입니다.</p>
+        </article>
+        <article class="cell">
+          <h3>업무 자동화</h3>
+          <p>엑셀, 문서, 웹 시스템을 오가는 반복 업무를 Python 기반 자동화(RPA)로 바꿉니다.</p>
+        </article>
+        <article class="cell">
+          <h3>맞춤형 소프트웨어 개발</h3>
+          <p>사내 시스템, 데이터 파이프라인, 업무 도구를 요구사항에 맞춰 개발하고 공급합니다.</p>
+        </article>
+        <article class="cell">
+          <h3>시스템 통합과 컨설팅</h3>
+          <p>컴퓨터시스템 통합에 관한 자문과 구축, 소프트웨어 개발과 자동화에 관한 교육·컨설팅을 제공합니다.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="band mist" id="q-flow">
+    <div class="wrap split">
+      <div>
+        <p class="status-line"><span class="status">개발 중</span></p>
+        <h2>자체 제품 Q-Flow</h2>
+        <p class="lead">API 661 공랭식 열교환기(ACHE) 헤더박스의 구조해석을 형상 입력부터 보고서까지 자동화하는 엔지니어링 소프트웨어입니다.</p>
+        <a class="btn btn-line" href="q-flow/">Q-Flow 자세히 보기</a>
+      </div>
+      <ol class="steps">
+        <li>
+          <h3>3D 모델링</h3>
+          <p>헤더박스와 노즐의 치수를 입력받아 해석용 3D 형상을 만듭니다.</p>
+        </li>
+        <li>
+          <h3>유한요소해석</h3>
+          <p>해석 입력 파일을 만들고 솔버를 실행해 하중조합을 모두 계산합니다.</p>
+        </li>
+        <li>
+          <h3>보고서 생성</h3>
+          <p>해석 결과를 표준 양식의 보고서로 정리합니다.</p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="band" id="why">
+    <div class="wrap">
+      <div class="band-head">
+        <h2>설계와 해석을 아는 소프트웨어 회사</h2>
+        <p>요구사항을 엔지니어의 언어로 듣고 소프트웨어로 옮깁니다.</p>
+      </div>
+      <div class="grid-3">
+        <div class="point">
+          <h3>엔지니어링 실무에서 출발합니다</h3>
+          <p>3D CAD 모델링과 구조해석(FEA)의 절차, 판정 기준, 보고서 양식에 맞춰 소프트웨어를 설계합니다. 결과물이 엔지니어의 검토 과정에 그대로 쓰이도록 만듭니다.</p>
+        </div>
+        <div class="point">
+          <h3>Python으로 처음부터 끝까지 연결합니다</h3>
+          <p>모델 생성, 해석 실행, 결과 정리, 문서 작성을 Python으로 이어 붙여 사람이 개입하는 단계를 줄입니다.</p>
+        </div>
+        <div class="point">
+          <h3>대기업 현장에서 수행했습니다</h3>
+          <p>2023년부터 국내 대기업(전자 제조) 현장에서 소프트웨어 개발 프로젝트를 수행해 왔습니다.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta" aria-labelledby="cta-title">
+    <div class="wrap">
+      <div>
+        <h2 id="cta-title">자동화할 해석 작업이나 업무가 있다면 알려 주세요</h2>
+        <p>외주 개발과 Q-Flow에 관한 문의를 이메일로 받습니다.</p>
+      </div>
+      <a class="btn btn-light" href="mailto:contact@cookieinteractive.com">contact@cookieinteractive.com</a>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-foot">
   <div class="wrap">
-    <div class="section-head">
-      <span class="kicker">SOFTWARE DEVELOPMENT</span>
-      <h2>Q-Flow는 저희가 직접 만든 결과물입니다</h2>
-      <p>Cookie Interactive는 반복적인 엔지니어링·업무 프로세스를 소프트웨어로 자동화하는 개발 회사입니다. Q-Flow는 그 역량을 보여주는 대표 사례이며, 아래와 같은 영역의 외주 개발도 함께 진행합니다.</p>
+    <div class="cols">
+      <div class="who">
+        <strong>쿠키인터랙티브 주식회사</strong>
+        <p>
+          <span lang="en">Cookie Interactive Inc.</span><br>
+          대표 전봉태<br>
+          사업자등록번호 620-87-00732<br>
+          경상남도 창원시<br>
+          <a href="mailto:contact@cookieinteractive.com">contact@cookieinteractive.com</a>
+        </p>
+      </div>
+      <div>
+        <h2>솔루션</h2>
+        <ul>
+          <li><a href="#solutions">엔지니어링 해석 자동화</a></li>
+          <li><a href="#solutions">업무 자동화</a></li>
+          <li><a href="#solutions">맞춤형 소프트웨어 개발</a></li>
+          <li><a href="#solutions">시스템 통합과 컨설팅</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>제품</h2>
+        <ul>
+          <li><a href="q-flow/">Q-Flow</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>회사</h2>
+        <ul>
+          <li><a href="company/">회사 소개</a></li>
+          <li><a href="company/#records">수행 실적</a></li>
+          <li><a href="notice/">공고</a></li>
+        </ul>
+      </div>
     </div>
-    <div class="services">
-      <div class="svc">
-        <svg class="svc-icon" viewBox="0 0 34 34" fill="none"><rect x="3" y="3" width="12" height="12" stroke="#159FDB" stroke-width="1.6"/><rect x="19" y="19" width="12" height="12" stroke="#159FDB" stroke-width="1.6"/><path d="M15 9H19V15" stroke="#0D7DB0" stroke-width="1.6"/></svg>
-        <h3>업무 자동화 (RPA)</h3>
-        <p>엑셀·문서·웹 시스템을 오가는 반복 업무를 Python 기반 자동화로 대체합니다.</p>
-      </div>
-      <div class="svc">
-        <svg class="svc-icon" viewBox="0 0 34 34" fill="none"><path d="M4 26L14 4L20 18L24 10L30 26" stroke="#159FDB" stroke-width="1.6" stroke-linejoin="round"/></svg>
-        <h3>CAD·FEA 파이프라인</h3>
-        <p>3D 모델링부터 구조해석, 보고서 생성까지 이어지는 엔지니어링 워크플로우를 자동화합니다.</p>
-      </div>
-      <div class="svc">
-        <svg class="svc-icon" viewBox="0 0 34 34" fill="none"><rect x="4" y="6" width="26" height="22" rx="1.5" stroke="#159FDB" stroke-width="1.6"/><line x1="4" y1="13" x2="30" y2="13" stroke="#159FDB" stroke-width="1.6"/></svg>
-        <h3>맞춤형 소프트웨어 외주</h3>
-        <p>사내 시스템, 데이터 파이프라인, 도구 개발 등 요구사항에 맞춘 수탁 개발을 진행합니다.</p>
-      </div>
+    <div class="legal">
+      <p lang="en">© 2026 Cookie Interactive Inc.</p>
     </div>
-  </div>
-</section>
-
-<section id="about">
-  <div class="wrap split">
-    <div>
-      <div class="section-head" style="margin-bottom:0;">
-        <span class="kicker">COMPANY</span>
-        <h2>10년째, 만드는 일을 하고 있습니다</h2>
-        <p>Cookie Interactive는 경남 창원에 기반을 둔 소프트웨어 개발 회사입니다. 기계공학과 CAD 모델링, FEA 해석 경험을 바탕으로 엔지니어링 자동화 소프트웨어를 만들고 있으며, Q-Flow는 그 연장선에 있는 자체 제품입니다.</p>
-      </div>
-    </div>
-    <div class="facts">
-      <dl>
-        <div class="row"><dt>설립</dt><dd>약 10년 전</dd></div>
-        <div class="row"><dt>위치</dt><dd>경남 창원</dd></div>
-        <div class="row"><dt>배경</dt><dd>기계공학 · CAD · FEA</dd></div>
-        <div class="row"><dt>핵심 도구</dt><dd>Python, CalculiX, PrePoMax</dd></div>
-      </dl>
-    </div>
-  </div>
-</section>
-
-<section id="contact" style="border-bottom:none;">
-  <div class="wrap contact-grid">
-    <div class="contact-info">
-      <div class="section-head" style="margin-bottom:28px;">
-        <span class="kicker">CONTACT</span>
-        <h2>문의하기</h2>
-        <p>Q-Flow 데모나 외주 개발 문의는 아래 채널로 연락 주세요.</p>
-      </div>
-      <div class="row"><div class="k">Email</div><div class="v">contact@cookieinteractive.com</div></div>
-      <div class="row"><div class="k">위치</div><div class="v">경남 창원</div></div>
-      <div class="row"><div class="k">회사명</div><div class="v">쿠키인터랙티브 주식회사</div></div>
-    </div>
-    <form onsubmit="return false;">
-      <div class="field">
-        <label for="f-name">이름 / 회사명</label>
-        <input id="f-name" type="text" placeholder="홍길동 / OO엔지니어링">
-      </div>
-      <div class="field">
-        <label for="f-email">이메일</label>
-        <input id="f-email" type="email" placeholder="you@company.com">
-      </div>
-      <div class="field">
-        <label for="f-msg">문의 내용</label>
-        <textarea id="f-msg" placeholder="Q-Flow 데모 요청 또는 외주 개발 관련 문의 내용을 적어주세요."></textarea>
-      </div>
-      <button class="submit-btn" type="submit">문의 보내기</button>
-    </form>
-  </div>
-</section>
-
-<footer>
-  <div class="wrap foot-grid">
-    <div class="foot-brand">
-      <img src="assets/logo.png" alt="Cookie Interactive">
-    </div>
-    <span class="foot-tag">The Ultimate Interaction</span>
-    <span class="foot-copy">© 2026 Cookie Interactive Inc.</span>
   </div>
 </footer>
 
